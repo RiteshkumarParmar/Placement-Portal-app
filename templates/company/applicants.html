@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+{% block title %}Applicants for {{ drive.job_title }} - PlaceHub{% endblock %}
+
+{% block content %}
+<nav aria-label="breadcrumb" class="mb-4">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{{ url_for('company.my_drives') }}">My Drives</a></li>
+        <li class="breadcrumb-item active">{{ drive.job_title }} &mdash; Applicants</li>
+    </ol>
+</nav>
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2><i class="bi bi-people me-2"></i>Applicants for "{{ drive.job_title }}"</h2>
+    <span class="badge bg-info fs-6">{{ applications|length }} applicant{{ 's' if applications|length != 1 }}</span>
+</div>
+
+{% if applications %}
+<div class="row g-4">
+    {% for app in applications %}
+    <div class="col-md-6">
+        <div class="card border-0 shadow-sm">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                    <div>
+                        <h5 class="mb-1">{{ app.student.name }}</h5>
+                        <p class="text-muted mb-0">{{ app.student.roll_number }} &middot; {{ app.student.department or 'N/A' }}</p>
+                    </div>
+                    {% if app.status == 'Applied' %}<span class="badge bg-secondary">{{ app.status }}</span>
+                    {% elif app.status == 'Shortlisted' %}<span class="badge bg-info">{{ app.status }}</span>
+                    {% elif app.status == 'Selected' %}<span class="badge bg-success">{{ app.status }}</span>
+                    {% elif app.status == 'Rejected' %}<span class="badge bg-danger">{{ app.status }}</span>
+                    {% endif %}
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-6">
+                        <small class="text-muted">CGPA</small>
+                        <p class="mb-0 fw-semibold">{{ app.student.cgpa or 'N/A' }}</p>
+                    </div>
+                    <div class="col-6">
+                        <small class="text-muted">Applied</small>
+                        <p class="mb-0 fw-semibold">{{ app.applied_date.strftime('%d %b %Y') }}</p>
+                    </div>
+                </div>
+
+                {% if app.student.skills %}
+                <p class="mb-2"><small class="text-muted">Skills:</small> {{ app.student.skills }}</p>
+                {% endif %}
+
+                {% if app.student.phone %}
+                <p class="mb-2"><small class="text-muted">Phone:</small> {{ app.student.phone }}</p>
+                {% endif %}
+
+                {% if app.remarks %}
+                <p class="mb-2"><small class="text-muted">Remarks:</small> {{ app.remarks }}</p>
+                {% endif %}
+
+                <hr>
+                <form method="POST" action="{{ url_for('company.update_application_status', app_id=app.id) }}">
+                    <div class="row g-2 align-items-end">
+                        <div class="col-5">
+                            <label class="form-label small">Update Status</label>
+                            <select class="form-select form-select-sm" name="status">
+                                {% for s in ['Applied', 'Shortlisted', 'Selected', 'Rejected'] %}
+                                <option value="{{ s }}" {{ 'selected' if app.status == s }}>{{ s }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-5">
+                            <label class="form-label small">Remarks</label>
+                            <input type="text" class="form-control form-control-sm" name="remarks" value="{{ app.remarks or '' }}" placeholder="Optional">
+                        </div>
+                        <div class="col-2">
+                            <button type="submit" class="btn btn-sm btn-primary w-100">
+                                <i class="bi bi-check"></i>
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<div class="text-center py-5 text-muted">
+    <i class="bi bi-people fs-1"></i>
+    <p class="mt-2">No applications received for this drive yet.</p>
+</div>
+{% endif %}
+{% endblock %}

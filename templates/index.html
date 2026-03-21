@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+{% block title %}PlaceHub - Campus Placement Portal{% endblock %}
+
+{% block content %}
+<div class="hero-section text-center py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <h1 class="display-4 fw-bold text-primary mb-3">
+                <i class="bi bi-mortarboard-fill"></i> PlaceHub
+            </h1>
+            <p class="lead text-muted mb-4">
+                Your one-stop campus placement portal. Connecting students with top companies
+                through streamlined recruitment drives.
+            </p>
+            <div class="d-flex justify-content-center gap-3 mb-5">
+                <a href="{{ url_for('register_student') }}" class="btn btn-primary btn-lg px-4">
+                    <i class="bi bi-person-plus me-2"></i>Student Registration
+                </a>
+                <a href="{{ url_for('register_company') }}" class="btn btn-outline-primary btn-lg px-4">
+                    <i class="bi bi-building-add me-2"></i>Company Registration
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4 mb-5">
+    <div class="col-md-4">
+        <div class="card h-100 border-0 shadow-sm text-center p-4">
+            <div class="card-body">
+                <div class="feature-icon bg-primary bg-gradient text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width:64px;height:64px;">
+                    <i class="bi bi-people-fill fs-4"></i>
+                </div>
+                <h5 class="card-title">For Students</h5>
+                <p class="card-text text-muted">
+                    Browse placement drives, apply with a single click, and track your application status in real time.
+                </p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card h-100 border-0 shadow-sm text-center p-4">
+            <div class="card-body">
+                <div class="feature-icon bg-success bg-gradient text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width:64px;height:64px;">
+                    <i class="bi bi-building fs-4"></i>
+                </div>
+                <h5 class="card-title">For Companies</h5>
+                <p class="card-text text-muted">
+                    Register your company, create placement drives, and shortlist the best talent from campus.
+                </p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card h-100 border-0 shadow-sm text-center p-4">
+            <div class="card-body">
+                <div class="feature-icon bg-warning bg-gradient text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width:64px;height:64px;">
+                    <i class="bi bi-shield-check fs-4"></i>
+                </div>
+                <h5 class="card-title">For Admin</h5>
+                <p class="card-text text-muted">
+                    Manage the entire placement process &mdash; approve companies, oversee drives, and monitor placements.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row justify-content-center mb-5">
+    <div class="col-lg-8">
+        <div class="card border-0 shadow-sm">
+            <div class="card-body p-4">
+                <h4 class="text-center mb-4">How It Works</h4>
+                <div class="row text-center">
+                    <div class="col-md-3">
+                        <div class="rounded-circle bg-primary text-white d-inline-flex align-items-center justify-content-center mb-2" style="width:40px;height:40px;">1</div>
+                        <p class="small fw-semibold">Register</p>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="rounded-circle bg-primary text-white d-inline-flex align-items-center justify-content-center mb-2" style="width:40px;height:40px;">2</div>
+                        <p class="small fw-semibold">Get Approved</p>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="rounded-circle bg-primary text-white d-inline-flex align-items-center justify-content-center mb-2" style="width:40px;height:40px;">3</div>
+                        <p class="small fw-semibold">Apply / Post</p>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="rounded-circle bg-primary text-white d-inline-flex align-items-center justify-content-center mb-2" style="width:40px;height:40px;">4</div>
+                        <p class="small fw-semibold">Get Placed</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+{% block title %}Browse Drives - PlaceHub{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2><i class="bi bi-search me-2"></i>Browse Placement Drives</h2>
+</div>
+
+<div class="card border-0 shadow-sm mb-4">
+    <div class="card-body">
+        <form method="GET" class="row g-3 align-items-end">
+            <div class="col-md-9">
+                <label class="form-label">Search by title, location, or type</label>
+                <input type="text" class="form-control" name="q" value="{{ search }}" placeholder="e.g., Software Engineer, Bangalore, Internship...">
+            </div>
+            <div class="col-md-3">
+                <button type="submit" class="btn btn-primary w-100"><i class="bi bi-search me-1"></i>Search</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% if drives %}
+<div class="row g-4">
+    {% for d in drives %}
+    <div class="col-md-6">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                    <h5 class="mb-0">{{ d.job_title }}</h5>
+                    {% if d.id in applied_drive_ids %}
+                        <span class="badge bg-success">Applied</span>
+                    {% endif %}
+                </div>
+                <p class="text-primary fw-semibold mb-1">{{ d.company.company_name }}</p>
+                <p class="text-muted mb-1"><i class="bi bi-geo-alt me-1"></i>{{ d.location or 'Location TBD' }}</p>
+                <p class="text-muted mb-1"><i class="bi bi-briefcase me-1"></i>{{ d.job_type or 'Type not specified' }}</p>
+                {% if d.salary_package %}
+                <p class="text-muted mb-1"><i class="bi bi-currency-rupee me-1"></i>{{ d.salary_package }}</p>
+                {% endif %}
+                <p class="text-muted mb-2"><i class="bi bi-calendar me-1"></i>Deadline: {{ d.application_deadline.strftime('%d %b %Y') }}</p>
+                {% if d.min_cgpa and d.min_cgpa > 0 %}
+                <p class="mb-2">
+                    <span class="badge {% if student.cgpa and student.cgpa >= d.min_cgpa %}bg-success{% else %}bg-danger{% endif %}">
+                        Min CGPA: {{ d.min_cgpa }}
+                    </span>
+                </p>
+                {% endif %}
+            </div>
+            <div class="card-footer bg-white border-0">
+                <a href="{{ url_for('student.drive_detail', drive_id=d.id) }}" class="btn btn-outline-primary btn-sm">
+                    <i class="bi bi-eye me-1"></i>View Details
+                </a>
+                {% if d.id not in applied_drive_ids %}
+                <form method="POST" action="{{ url_for('student.apply_drive', drive_id=d.id) }}" class="d-inline">
+                    <button type="submit" class="btn btn-primary btn-sm">
+                        <i class="bi bi-send me-1"></i>Apply Now
+                    </button>
+                </form>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<div class="text-center py-5 text-muted">
+    <i class="bi bi-briefcase fs-1"></i>
+    <p class="mt-2">No placement drives available right now.</p>
+</div>
+{% endif %}
+{% endblock %}

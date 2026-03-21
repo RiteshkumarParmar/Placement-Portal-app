@@ -1,0 +1,128 @@
+{% extends "base.html" %}
+{% block title %}Student Dashboard - PlaceHub{% endblock %}
+
+{% block content %}
+<h2 class="mb-4"><i class="bi bi-speedometer2 me-2"></i>Student Dashboard</h2>
+
+<div class="row g-4 mb-4">
+    <div class="col-md-3">
+        <div class="card border-0 shadow-sm bg-primary text-white">
+            <div class="card-body text-center">
+                <h3 class="mb-0">{{ applied_count }}</h3>
+                <small>Applications</small>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card border-0 shadow-sm bg-info text-white">
+            <div class="card-body text-center">
+                <h3 class="mb-0">{{ shortlisted_count }}</h3>
+                <small>Shortlisted</small>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card border-0 shadow-sm bg-success text-white">
+            <div class="card-body text-center">
+                <h3 class="mb-0">{{ selected_count }}</h3>
+                <small>Selected</small>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card border-0 shadow-sm bg-warning text-dark">
+            <div class="card-body text-center">
+                <h3 class="mb-0">{{ approved_drives|length }}</h3>
+                <small>Open Drives</small>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4">
+    <div class="col-md-7">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Available Placement Drives</h5>
+                <a href="{{ url_for('student.browse_drives') }}" class="btn btn-sm btn-outline-primary">View All</a>
+            </div>
+            <div class="card-body p-0">
+                {% if approved_drives %}
+                <div class="list-group list-group-flush">
+                    {% for d in approved_drives %}
+                    <a href="{{ url_for('student.drive_detail', drive_id=d.id) }}" class="list-group-item list-group-item-action">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div>
+                                <h6 class="mb-1">{{ d.job_title }}</h6>
+                                <p class="text-muted mb-1 small">{{ d.company.company_name }} &middot; {{ d.location or 'Location TBD' }}</p>
+                                <small class="text-muted">
+                                    <i class="bi bi-calendar me-1"></i>Deadline: {{ d.application_deadline.strftime('%d %b %Y') }}
+                                    {% if d.salary_package %} &middot; <i class="bi bi-currency-rupee"></i>{{ d.salary_package }}{% endif %}
+                                </small>
+                            </div>
+                            <div>
+                                {% if d.id in applied_drive_ids %}
+                                    <span class="badge bg-success">Applied</span>
+                                {% else %}
+                                    <span class="badge bg-primary">Open</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </a>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <p class="text-muted text-center py-3">No drives available right now.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-5">
+        <div class="card border-0 shadow-sm mb-4">
+            <div class="card-header bg-white">
+                <h5 class="mb-0">Your Profile</h5>
+            </div>
+            <div class="card-body">
+                <p><strong>{{ student.name }}</strong></p>
+                <p class="text-muted mb-1">{{ student.roll_number }} &middot; {{ student.department or 'Dept. not set' }}</p>
+                <p class="text-muted mb-1">CGPA: {{ student.cgpa or 'Not set' }}</p>
+                <p class="text-muted mb-2">
+                    Resume: {% if student.resume_path %}<span class="text-success">Uploaded</span>{% else %}<span class="text-danger">Not uploaded</span>{% endif %}
+                </p>
+                <a href="{{ url_for('student.profile') }}" class="btn btn-sm btn-outline-primary">
+                    <i class="bi bi-pencil me-1"></i>Edit Profile
+                </a>
+            </div>
+        </div>
+
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Recent Applications</h5>
+                <a href="{{ url_for('student.my_applications') }}" class="btn btn-sm btn-outline-primary">All</a>
+            </div>
+            <div class="card-body p-0">
+                {% if my_applications %}
+                <ul class="list-group list-group-flush">
+                    {% for app in my_applications[:5] %}
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <div>
+                            <strong class="small">{{ app.drive.job_title }}</strong><br>
+                            <small class="text-muted">{{ app.drive.company.company_name }}</small>
+                        </div>
+                        {% if app.status == 'Applied' %}<span class="badge bg-secondary">{{ app.status }}</span>
+                        {% elif app.status == 'Shortlisted' %}<span class="badge bg-info">{{ app.status }}</span>
+                        {% elif app.status == 'Selected' %}<span class="badge bg-success">{{ app.status }}</span>
+                        {% elif app.status == 'Rejected' %}<span class="badge bg-danger">{{ app.status }}</span>
+                        {% endif %}
+                    </li>
+                    {% endfor %}
+                </ul>
+                {% else %}
+                <p class="text-muted text-center py-3">No applications yet.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

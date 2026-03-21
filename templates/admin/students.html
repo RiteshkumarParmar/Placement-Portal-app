@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+{% block title %}Manage Students - PlaceHub{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2><i class="bi bi-people me-2"></i>Manage Students</h2>
+</div>
+
+<div class="card border-0 shadow-sm mb-4">
+    <div class="card-body">
+        <form method="GET" class="row g-3 align-items-end">
+            <div class="col-md-9">
+                <label class="form-label">Search by Name, Roll Number, or Phone</label>
+                <input type="text" class="form-control" name="q" value="{{ search }}" placeholder="Enter name, roll number, or phone...">
+            </div>
+            <div class="col-md-3">
+                <button type="submit" class="btn btn-primary w-100"><i class="bi bi-search me-1"></i>Search</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% if students %}
+<div class="table-responsive">
+    <table class="table table-hover bg-white shadow-sm rounded">
+        <thead class="table-light">
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Roll No.</th>
+                <th>Department</th>
+                <th>CGPA</th>
+                <th>Phone</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for s in students %}
+            <tr>
+                <td>{{ s.id }}</td>
+                <td>
+                    <a href="{{ url_for('admin.student_detail', student_id=s.id) }}" class="text-decoration-none fw-semibold">
+                        {{ s.name }}
+                    </a>
+                </td>
+                <td>{{ s.roll_number }}</td>
+                <td>{{ s.department or '-' }}</td>
+                <td>{{ s.cgpa or '-' }}</td>
+                <td>{{ s.phone or '-' }}</td>
+                <td>
+                    {% if s.is_blacklisted %}
+                        <span class="badge bg-dark">Blacklisted</span>
+                    {% elif not s.user.is_active_account %}
+                        <span class="badge bg-secondary">Deactivated</span>
+                    {% else %}
+                        <span class="badge bg-success">Active</span>
+                    {% endif %}
+                </td>
+                <td>
+                    <div class="btn-group btn-group-sm">
+                        <form method="POST" action="{{ url_for('admin.blacklist_student', student_id=s.id) }}" class="d-inline">
+                            <button class="btn btn-outline-dark btn-sm" title="{{ 'Unblacklist' if s.is_blacklisted else 'Blacklist' }}">
+                                <i class="bi bi-slash-circle"></i>
+                            </button>
+                        </form>
+                        <form method="POST" action="{{ url_for('admin.deactivate_student', student_id=s.id) }}" class="d-inline">
+                            <button class="btn btn-outline-warning btn-sm" title="{{ 'Activate' if not s.user.is_active_account else 'Deactivate' }}">
+                                <i class="bi bi-power"></i>
+                            </button>
+                        </form>
+                        <form method="POST" action="{{ url_for('admin.delete_student', student_id=s.id) }}" class="d-inline">
+                            <button class="btn btn-outline-danger btn-sm" title="Delete"><i class="bi bi-trash"></i></button>
+                        </form>
+                    </div>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% else %}
+<div class="text-center py-5 text-muted">
+    <i class="bi bi-people fs-1"></i>
+    <p class="mt-2">No students found.</p>
+</div>
+{% endif %}
+{% endblock %}

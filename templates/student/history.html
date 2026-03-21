@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block title %}Placement History - PlaceHub{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2><i class="bi bi-clock-history me-2"></i>Placement History</h2>
+    <a href="{{ url_for('student.my_applications') }}" class="btn btn-outline-primary">
+        <i class="bi bi-arrow-left me-1"></i>All Applications
+    </a>
+</div>
+
+<p class="text-muted mb-4">Showing only finalized applications (Selected / Rejected).</p>
+
+{% if applications %}
+<div class="row g-4">
+    {% for app in applications %}
+    <div class="col-md-6">
+        <div class="card border-0 shadow-sm h-100 {% if app.status == 'Selected' %}border-start border-success border-4{% else %}border-start border-danger border-4{% endif %}">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div>
+                        <h5 class="mb-1">{{ app.drive.job_title }}</h5>
+                        <p class="text-primary mb-1">{{ app.drive.company.company_name }}</p>
+                    </div>
+                    {% if app.status == 'Selected' %}
+                        <span class="badge bg-success fs-6">Selected</span>
+                    {% else %}
+                        <span class="badge bg-danger fs-6">Rejected</span>
+                    {% endif %}
+                </div>
+                <hr>
+                <p class="text-muted mb-1"><i class="bi bi-briefcase me-1"></i>{{ app.drive.job_type or 'N/A' }}</p>
+                <p class="text-muted mb-1"><i class="bi bi-geo-alt me-1"></i>{{ app.drive.location or 'N/A' }}</p>
+                {% if app.drive.salary_package %}
+                <p class="text-muted mb-1"><i class="bi bi-currency-rupee me-1"></i>{{ app.drive.salary_package }}</p>
+                {% endif %}
+                <p class="text-muted mb-0"><i class="bi bi-calendar me-1"></i>Applied: {{ app.applied_date.strftime('%d %b %Y') }}</p>
+                {% if app.remarks %}
+                <p class="mt-2 mb-0"><small class="text-muted">Remarks: {{ app.remarks }}</small></p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<div class="text-center py-5 text-muted">
+    <i class="bi bi-clock-history fs-1"></i>
+    <p class="mt-2">No finalized placement records yet.</p>
+</div>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+{% block title %}All Applications - PlaceHub{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2><i class="bi bi-file-earmark-text me-2"></i>All Applications</h2>
+</div>
+
+<div class="card border-0 shadow-sm mb-4">
+    <div class="card-body">
+        <form method="GET" class="row g-3 align-items-end">
+            <div class="col-md-9">
+                <label class="form-label">Filter by Status</label>
+                <select class="form-select" name="status">
+                    <option value="all" {{ 'selected' if status_filter == 'all' }}>All</option>
+                    <option value="Applied" {{ 'selected' if status_filter == 'Applied' }}>Applied</option>
+                    <option value="Shortlisted" {{ 'selected' if status_filter == 'Shortlisted' }}>Shortlisted</option>
+                    <option value="Selected" {{ 'selected' if status_filter == 'Selected' }}>Selected</option>
+                    <option value="Rejected" {{ 'selected' if status_filter == 'Rejected' }}>Rejected</option>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <button type="submit" class="btn btn-primary w-100"><i class="bi bi-funnel me-1"></i>Filter</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% if applications %}
+<div class="table-responsive">
+    <table class="table table-hover bg-white shadow-sm rounded">
+        <thead class="table-light">
+            <tr>
+                <th>ID</th>
+                <th>Student</th>
+                <th>Roll No.</th>
+                <th>Drive</th>
+                <th>Company</th>
+                <th>Applied Date</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for app in applications %}
+            <tr>
+                <td>{{ app.id }}</td>
+                <td><a href="{{ url_for('admin.student_detail', student_id=app.student.id) }}">{{ app.student.name }}</a></td>
+                <td>{{ app.student.roll_number }}</td>
+                <td><a href="{{ url_for('admin.drive_detail', drive_id=app.drive.id) }}">{{ app.drive.job_title }}</a></td>
+                <td>{{ app.drive.company.company_name }}</td>
+                <td>{{ app.applied_date.strftime('%d %b %Y') }}</td>
+                <td>
+                    {% if app.status == 'Applied' %}<span class="badge bg-secondary">{{ app.status }}</span>
+                    {% elif app.status == 'Shortlisted' %}<span class="badge bg-info">{{ app.status }}</span>
+                    {% elif app.status == 'Selected' %}<span class="badge bg-success">{{ app.status }}</span>
+                    {% elif app.status == 'Rejected' %}<span class="badge bg-danger">{{ app.status }}</span>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% else %}
+<div class="text-center py-5 text-muted">
+    <i class="bi bi-file-earmark-text fs-1"></i>
+    <p class="mt-2">No applications found.</p>
+</div>
+{% endif %}
+{% endblock %}
